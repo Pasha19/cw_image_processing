@@ -5,6 +5,7 @@ channels:
   - defaults
 dependencies:
   - astra-toolbox=2.1
+  - click=8.1
   - foam_ct_phantom=1.1
   - h5py=3.11
   - matplotlib=3.8
