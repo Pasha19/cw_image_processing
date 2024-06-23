@@ -118,7 +118,10 @@ def gen_projs_voxel(filename: str, angles_num: int) -> None:
 
 def get_height(filename: str, dataset_in: str) -> int:
     with h5py.File(filename, "r") as f:
-        return f[dataset_in].attrs["size"]
+        dataset = f[dataset_in]
+        if "size" in dataset.attrs:
+            return dataset.attrs["size"]
+        return max(f[dataset_in].attrs["shape"])
 
 
 def reconstruct_fbp(
