@@ -1,10 +1,12 @@
 import astra
 import foam_ct_phantom as fcp
 import h5py
+import matplotlib.pyplot as plt
 import numpy as np
 import tempfile
 import time
 
+from PIL import Image
 from typing import Callable
 
 
@@ -157,3 +159,28 @@ def reconstruct_fbp(
     with h5py.File(filename, "a") as f:
         del_dataset_if_exists(f, dataset_out)
         f.create_dataset(dataset_out, data=rec, compression="gzip")
+
+
+def normalize(data: np.ndarray) -> np.ndarray:
+    return (data - np.min(data)) / (np.max(data) - np.min(data))
+
+
+def save_img(data: np.ndarray, output: str) -> None:
+    viridis_cmap = plt.get_cmap("viridis")
+    norm_data = normalize(data)
+    im = Image.fromarray((255 * viridis_cmap(norm_data)).astype(np.uint8))
+    im.save(output)
+
+
+def img(filename: str, dataset: str, output: str, axis: int, ind: int) -> None:
+    with h5py.File(filename, "r") as f:
+        data = f[dataset][()]
+    if axis == 0:
+        result = data[ind, :, :]
+    elif axis == 1:
+        result = data[:, ind, :]
+    elif axis == 2:
+        result = data[:, :, ind]
+    else:
+        raise ValueError(f"axis must be 0 or 1 or 2, got {axis}")
+    save_img(result, output)
