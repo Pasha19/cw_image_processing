@@ -198,7 +198,7 @@ def show_row(
         row: int,
         offset: int = 0,
         diff: bool = False,
-) -> None:
+) -> tuple[float, float]:
     with h5py.File(filename, "r") as f:
         volume = f["volume"][()][height]
         size = f["volume"].attrs["size"]
@@ -216,3 +216,5 @@ def show_row(
     plt.grid(True)
     plt.tight_layout()
     plt.savefig(output)
+
+    return np.squeeze(np.subtract(norm_row[0], volume)).mean(), np.squeeze(np.subtract(norm_row[1], volume)).mean()

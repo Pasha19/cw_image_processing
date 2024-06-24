@@ -88,7 +88,7 @@ def show_row(
         diff: bool,
 ) -> None:
     """Show single row of slice"""
-    functions.show_row(
+    err = functions.show_row(
         filename,
         ("rec_fbp_accurate", "rec_fbp_voxel"),
         ("accurate", "voxel"),
@@ -98,6 +98,7 @@ def show_row(
         offset,
         diff,
     )
+    click.echo(f"err_accurate: {err[0]}\nerr_voxel: {err[1]}\n")
 
 
 if __name__ == "__main__":
