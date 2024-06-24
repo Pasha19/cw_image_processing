@@ -1,12 +1,12 @@
 package:
   name: cadia
-  version: 1.0.0
+  version: 1.0.1
 
 source:
   path: .
 
 build:
-  number: 4
+  number: 0
   script: {{ PYTHON }} setup.py install
 
 requirements:

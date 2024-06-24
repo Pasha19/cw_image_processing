@@ -186,7 +186,10 @@ def img(filename: str, dataset: str, output: str, axis: int, ind: int, flip: boo
         result = data[:, :, ind]
     else:
         raise ValueError(f"axis must be 0 or 1 or 2, got {axis}")
-    save_img(np.flip(result, axis=0), output)
+    if flip:
+        save_img(np.flip(result, axis=0), output)
+    else:
+        save_img(result, output)
 
 
 def show_row(
