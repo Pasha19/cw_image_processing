@@ -175,7 +175,7 @@ def save_img(data: np.ndarray, output: str) -> None:
     im.save(output)
 
 
-def img(filename: str, dataset: str, output: str, axis: int, ind: int) -> None:
+def img(filename: str, dataset: str, output: str, axis: int, ind: int, flip: bool) -> None:
     with h5py.File(filename, "r") as f:
         data = f[dataset][()]
     if axis == 0:
@@ -186,4 +186,33 @@ def img(filename: str, dataset: str, output: str, axis: int, ind: int) -> None:
         result = data[:, :, ind]
     else:
         raise ValueError(f"axis must be 0 or 1 or 2, got {axis}")
-    save_img(result, output)
+    save_img(np.flip(result, axis=0), output)
+
+
+def show_row(
+        filename: str,
+        datasets: tuple[str, str],
+        titles: tuple[str, str],
+        output: str,
+        height: int,
+        row: int,
+        offset: int = 0,
+        diff: bool = False,
+) -> None:
+    with h5py.File(filename, "r") as f:
+        volume = f["volume"][()][height]
+        size = f["volume"].attrs["size"]
+        rec = f[datasets[0]][()][height], f[datasets[1]][()][height]
+    norm_row = np.flip(normalize(rec[0]), axis=0), np.flip(normalize(rec[1]), axis=0)
+    plt.figure(figsize=(8, 5))
+    plt.xlim([offset, size - offset - 1])
+    if diff:
+        plt.plot(norm_row[0][row] - volume[row], label=titles[0])
+        plt.plot(norm_row[1][row] - volume[row], label=titles[1])
+    else:
+        plt.plot(norm_row[0][row], label=titles[0])
+        plt.plot(norm_row[1][row], label=titles[1])
+    plt.legend(loc="upper right", bbox_to_anchor=(0.5, -0.1), ncol=2)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(output)

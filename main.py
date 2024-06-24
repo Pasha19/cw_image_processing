@@ -66,11 +66,39 @@ def reconstruct_fbp(filename: str, dataset_in: str, dataset_out: str) -> None:
 @click.argument("output", type=click.Path())
 @click.option("--axis", type=click.IntRange(min=0, max=2))
 @click.option("--ind", type=click.IntRange(min=0))
-def img(filename: str, dataset: str, output: str, axis: int, ind: int) -> None:
+@click.option("--flip", is_flag=True, default=False, help="Flip x axis")
+def img(filename: str, dataset: str, output: str, axis: int, ind: int, flip: bool) -> None:
     """Create image of slice of 3d volume"""
-    functions.img(filename, dataset, output, axis, ind)
+    functions.img(filename, dataset, output, axis, ind, flip)
+
+
+@main.command()
+@click.argument("filename", type=click.Path(exists=True))
+@click.argument("output", type=click.Path())
+@click.option("--height", type=click.IntRange(min=0))
+@click.option("--row", type=click.IntRange(min=0))
+@click.option("--offset", type=click.IntRange(min=0), default=0, help="Offset from start and end of image")
+@click.option("--diff", is_flag=True, default=False, help="Show difference with voxel volume")
+def show_row(
+        filename: str,
+        output: str,
+        height: int,
+        row: int,
+        offset: int,
+        diff: bool,
+) -> None:
+    """Show single row of slice"""
+    functions.show_row(
+        filename,
+        ("rec_fbp_accurate", "rec_fbp_voxel"),
+        ("accurate", "voxel"),
+        output,
+        height,
+        row,
+        offset,
+        diff,
+    )
 
 
 if __name__ == "__main__":
-    # functions.img("test1.h5", "rec_fbp_accurate", "img02.png", 0, 0)
     main()
