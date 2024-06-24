@@ -1,0 +1,23 @@
+package:
+  name: cadia
+  version: 1.0.0
+
+source:
+  path: .
+
+build:
+  number: 4
+  script: {{ PYTHON }} setup.py install
+
+requirements:
+  build:
+    - python==3.10
+    - setuptools
+  run:
+    - astra-toolbox>=2.1,<2.2
+    - click>=8.1,<8.2
+    - foam_ct_phantom>=1.1,<1.2
+    - h5py>=3.11,<3.12
+    - matplotlib>=3.8,<3.9
+    - numpy>=1.26,<1.27
+    - python>=3.10,<3.11

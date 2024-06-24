@@ -1,5 +1,5 @@
+from . import functions
 import click
-import functions
 
 
 @click.group()
